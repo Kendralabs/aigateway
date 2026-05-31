@@ -15,6 +15,7 @@ import { getRuntimeKey } from 'hono/adapter';
 import { requestValidator } from './middlewares/requestValidator';
 import { hooks } from './middlewares/hooks';
 import { memoryCache } from './middlewares/cache';
+import { metricsRecorder, registerMetricsEndpoint } from './middlewares/metricsMiddleware';
 
 // Handlers
 import { proxyHandler } from './handlers/proxyHandler';
@@ -89,7 +90,10 @@ if (runtime === 'node') {
  * GET route for the root path.
  * Returns a greeting message.
  */
-app.get('/', (c) => c.text('AI Gateway says hey!'));
+app.get('/', (c) => c.text('Kendra AI Gateway'));
+
+// Prometheus metrics — scraped by in-cluster Prometheus every 15s
+registerMetricsEndpoint(app);
 
 // Use prettyJSON middleware for all routes
 app.use('*', prettyJSON());
@@ -104,6 +108,9 @@ app.get('/v1/models', modelsHandler);
 
 // Use hooks middleware for all routes
 app.use('*', hooks);
+
+// Record metrics for every LLM call (runs after response)
+app.use('*', metricsRecorder);
 
 if (conf.cache === true) {
   app.use('*', memoryCache());

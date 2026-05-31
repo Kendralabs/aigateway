@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+
+**Architecture & engineering principles:** See global `~/.claude/ENGINEERING-PRINCIPLES.md` — applies to all Kendra services. Invoke `/kendra-arch` to review/scaffold against these principles.
+
 ## Project Overview
 
 This is the **Portkey AI Gateway** - a fast, reliable AI gateway that routes requests to 250+ LLMs with sub-1ms latency. It's built with Hono framework for TypeScript/JavaScript and can be deployed to multiple environments including Cloudflare Workers, Node.js servers, and Docker containers.
