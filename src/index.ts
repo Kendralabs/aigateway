@@ -13,9 +13,14 @@ import { getRuntimeKey } from 'hono/adapter';
 
 // Middlewares
 import { requestValidator } from './middlewares/requestValidator';
+import { piiMasking } from './middlewares/piiMasking';
 import { hooks } from './middlewares/hooks';
 import { memoryCache } from './middlewares/cache';
-import { metricsRecorder, registerMetricsEndpoint } from './middlewares/metricsMiddleware';
+import { kaigPolicy } from './middlewares/kaigPolicy';
+import {
+  metricsRecorder,
+  registerMetricsEndpoint,
+} from './middlewares/metricsMiddleware';
 
 // Handlers
 import { proxyHandler } from './handlers/proxyHandler';
@@ -107,7 +112,9 @@ if (getRuntimeKey() === 'node') {
 app.get('/v1/models', modelsHandler);
 
 // Use hooks middleware for all routes
+app.use('*', kaigPolicy());
 app.use('*', hooks);
+app.use('*', piiMasking());
 
 // Record metrics for every LLM call (runs after response)
 app.use('*', metricsRecorder);
