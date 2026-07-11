@@ -16,33 +16,41 @@ const histogramBuckets = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000];
 const histograms: Record<string, number[]> = {};
 
 function inc(name: string, labels: Record<string, string>, value = 1) {
-  const key = `${name}{${Object.entries(labels).map(([k, v]) => `${k}="${v}"`).join(',')}}`;
+  const key = `${name}{${Object.entries(labels)
+    .map(([k, v]) => `${k}="${v}"`)
+    .join(',')}}`;
   counters[key] = (counters[key] || 0) + value;
 }
 
 function observe(name: string, labels: Record<string, string>, ms: number) {
-  const key = `${name}{${Object.entries(labels).map(([k, v]) => `${k}="${v}"`).join(',')}}`;
+  const key = `${name}{${Object.entries(labels)
+    .map(([k, v]) => `${k}="${v}"`)
+    .join(',')}}`;
   if (!histograms[key]) {
-    histograms[key] = new Array(histogramBuckets.length + 2).fill(0);  // buckets + Inf + count
+    histograms[key] = new Array(histogramBuckets.length + 2).fill(0); // buckets + Inf + count
   }
   const h = histograms[key];
-  h[h.length - 1]++;  // count
+  h[h.length - 1]++; // count
   for (let i = 0; i < histogramBuckets.length; i++) {
     if (ms <= histogramBuckets[i]) h[i]++;
   }
-  h[histogramBuckets.length]++;  // +Inf
+  h[histogramBuckets.length]++; // +Inf
 }
 
 function renderPrometheus(): string {
   const lines: string[] = [];
 
-  lines.push('# HELP gateway_requests_total Total LLM requests proxied through the gateway');
+  lines.push(
+    '# HELP gateway_requests_total Total LLM requests proxied through the gateway'
+  );
   lines.push('# TYPE gateway_requests_total counter');
   for (const [k, v] of Object.entries(counters)) {
     if (k.startsWith('gateway_requests_total')) lines.push(`${k} ${v}`);
   }
 
-  lines.push('# HELP gateway_tokens_total Total tokens processed (input + output)');
+  lines.push(
+    '# HELP gateway_tokens_total Total tokens processed (input + output)'
+  );
   lines.push('# TYPE gateway_tokens_total counter');
   for (const [k, v] of Object.entries(counters)) {
     if (k.startsWith('gateway_tokens_total')) lines.push(`${k} ${v}`);
@@ -60,17 +68,28 @@ function renderPrometheus(): string {
     if (k.startsWith('gateway_cache_hits_total')) lines.push(`${k} ${v}`);
   }
 
-  lines.push('# HELP gateway_request_duration_ms Request duration in milliseconds');
+  lines.push(
+    '# HELP gateway_request_duration_ms Request duration in milliseconds'
+  );
   lines.push('# TYPE gateway_request_duration_ms histogram');
   for (const [labelKey, bucketValues] of Object.entries(histograms)) {
     if (!labelKey.startsWith('gateway_request_duration_ms')) continue;
-    const labels = labelKey.replace('gateway_request_duration_ms', '').replace(/^\{/, '').replace(/\}$/, '');
+    const labels = labelKey
+      .replace('gateway_request_duration_ms', '')
+      .replace(/^\{/, '')
+      .replace(/\}$/, '');
     const labelStr = labels ? `{${labels},` : '{';
     for (let i = 0; i < histogramBuckets.length; i++) {
-      lines.push(`gateway_request_duration_ms_bucket${labelStr}le="${histogramBuckets[i]}"} ${bucketValues[i]}`);
+      lines.push(
+        `gateway_request_duration_ms_bucket${labelStr}le="${histogramBuckets[i]}"} ${bucketValues[i]}`
+      );
     }
-    lines.push(`gateway_request_duration_ms_bucket${labelStr}le="+Inf"} ${bucketValues[histogramBuckets.length]}`);
-    lines.push(`gateway_request_duration_ms_count${labels ? `{${labels}}` : ''} ${bucketValues[bucketValues.length - 1]}`);
+    lines.push(
+      `gateway_request_duration_ms_bucket${labelStr}le="+Inf"} ${bucketValues[histogramBuckets.length]}`
+    );
+    lines.push(
+      `gateway_request_duration_ms_count${labels ? `{${labels}}` : ''} ${bucketValues[bucketValues.length - 1]}`
+    );
   }
 
   return lines.join('\n') + '\n';
@@ -111,14 +130,39 @@ export const metricsRecorder: MiddlewareHandler = async (c, next) => {
   // Token counting from response body (best effort)
   try {
     const respClone = c.res.clone();
-    const body = await respClone.json() as any;
+    const body = (await respClone.json()) as any;
     const usage = body?.usage;
     if (usage) {
       if (usage.prompt_tokens) {
-        inc('gateway_tokens_total', { provider, model, type: 'input' }, usage.prompt_tokens);
+        inc(
+          'gateway_tokens_total',
+          { provider, model, type: 'input' },
+          usage.prompt_tokens
+        );
       }
       if (usage.completion_tokens) {
-        inc('gateway_tokens_total', { provider, model, type: 'output' }, usage.completion_tokens);
+        inc(
+          'gateway_tokens_total',
+          { provider, model, type: 'output' },
+          usage.completion_tokens
+        );
+      }
+
+      // Asynchronously post usage to model-catalog without blocking client response
+      if (model !== 'unknown' && c.res.status === 200) {
+        const catalogUrl = process.env.MODEL_CATALOG_URL || 'http://localhost:8004';
+        fetch(`${catalogUrl}/api/usage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model_id: model,
+            user_id: c.req.header('x-kiam-user-id') || 'guest',
+            request_tokens: usage.prompt_tokens || 0,
+            response_tokens: usage.completion_tokens || 0
+          })
+        }).catch((err: any) => {
+          console.error('Failed to post usage telemetry to catalog:', err.message);
+        });
       }
     }
   } catch {
