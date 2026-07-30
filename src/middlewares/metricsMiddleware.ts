@@ -150,7 +150,8 @@ export const metricsRecorder: MiddlewareHandler = async (c, next) => {
 
       // Asynchronously post usage to model-catalog without blocking client response
       if (model !== 'unknown' && c.res.status === 200) {
-        const catalogUrl = process.env.MODEL_CATALOG_URL || 'http://localhost:8004';
+        const catalogUrl =
+          process.env.MODEL_CATALOG_URL || 'http://localhost:8004';
         fetch(`${catalogUrl}/api/usage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -158,10 +159,13 @@ export const metricsRecorder: MiddlewareHandler = async (c, next) => {
             model_id: model,
             user_id: c.req.header('x-kiam-user-id') || 'guest',
             request_tokens: usage.prompt_tokens || 0,
-            response_tokens: usage.completion_tokens || 0
-          })
+            response_tokens: usage.completion_tokens || 0,
+          }),
         }).catch((err: any) => {
-          console.error('Failed to post usage telemetry to catalog:', err.message);
+          console.error(
+            'Failed to post usage telemetry to catalog:',
+            err.message
+          );
         });
       }
     }

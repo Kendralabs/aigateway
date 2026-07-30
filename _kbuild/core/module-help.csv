@@ -1,0 +1,9 @@
+module,phase,name,code,sequence,workflow-file,command,required,agent,options,description,output-location,outputs
+core,,Brainstorming,BS,20,_kBuild/core/workflows/brainstorming/workflow.md,kBuild-brainstorming,false,analyst,,Facilitate interactive brainstorming sessions using diverse creative techniques and ideation methods,{output_folder}/brainstorming/brainstorming-session-{{date}}.md,,
+core,,Party Mode,PM,30,_kBuild/core/workflows/party-mode/workflow.md,kBuild-party-mode,false,party-mode facilitator,,Orchestrates group discussions between all installed kBuild agents enabling natural multi-agent conversations,,
+core,,kBuild-help,BH,40,_kBuild/core/tasks/help.md,kBuild-help,false,,,Get unstuck by showing what workflow steps come next or answering questions about what to do in the kBuild,,
+core,,Index Docs,ID,50,_kBuild/core/tasks/index-docs.xml,kBuild-index-docs,false,,,Generates or updates an index.md of all documents in the specified directory,,
+core,,Shard Document,SD,70,_kBuild/core/tasks/shard-doc.xml,kBuild-shard-doc,false,,,Splits large markdown documents into smaller organized files based on level 2 sections,,
+core,,Editorial Review - Prose,EP,80,_kBuild/core/tasks/editorial-review-prose.xml,kBuild-editorial-review-prose,false,,,Clinical copy-editor that reviews text for communication issues,,"three-column markdown table with suggested fixes",
+core,,Editorial Review - Structure,ES,90,_kBuild/core/tasks/editorial-review-structure.xml,kBuild-editorial-review-structure,false,,,Structural editor that proposes cuts reorganization and simplification while preserving comprehension,,
+core,,Adversarial Review (General),AR,100,_kBuild/core/tasks/review-adversarial-general.xml,kBuild-review-adversarial-general,false,,,Cynically review content and produce findings,,

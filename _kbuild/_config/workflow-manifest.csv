@@ -1,0 +1,10 @@
+name,description,module,path
+"brainstorming","Facilitate interactive brainstorming sessions using diverse creative techniques and ideation methods","core","_kbuild/core/workflows/brainstorming/workflow.md"
+"party-mode","Orchestrates group discussions between all installed kBuild agents, enabling natural multi-agent conversations","core","_kbuild/core/workflows/party-mode/workflow.md"
+"agent","Tri-modal workflow for creating, editing, and validating KBUILD Core compliant agents","kbb","_kbuild/kbb/workflows/agent/workflow.md"
+"module","Quad-modal workflow for creating KBUILD modules (Brief + Create + Edit + Validate)","kbb","_kbuild/kbb/workflows/module/workflow.md"
+"workflow","Create structured standalone workflows using markdown-based step architecture (tri-modal: create, validate, edit)","kbb","_kbuild/kbb/workflows/workflow/workflow.md"
+"design-thinking","Guide human-centered design processes using empathy-driven methodologies. This workflow walks through the design thinking phases - Empathize, Define, Ideate, Prototype, and Test - to create solutions deeply rooted in user needs.","cis","_kbuild/cis/workflows/design-thinking/workflow.yaml"
+"innovation-strategy","Identify disruption opportunities and architect business model innovation. This workflow guides strategic analysis of markets, competitive dynamics, and business model innovation to uncover sustainable competitive advantages and breakthrough opportunities.","cis","_kbuild/cis/workflows/innovation-strategy/workflow.yaml"
+"problem-solving","Apply systematic problem-solving methodologies to crack complex challenges. This workflow guides through problem diagnosis, root cause analysis, creative solution generation, evaluation, and implementation planning using proven frameworks.","cis","_kbuild/cis/workflows/problem-solving/workflow.yaml"
+"storytelling","Craft compelling narratives using proven story frameworks and techniques. This workflow guides users through structured narrative development, applying appropriate story frameworks to create emotionally resonant and engaging stories for any purpose.","cis","_kbuild/cis/workflows/storytelling/workflow.yaml"

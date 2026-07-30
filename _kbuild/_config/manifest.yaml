@@ -1,0 +1,30 @@
+installation:
+  version: 6.0.0-Beta.5
+  installDate: 2026-02-21T21:58:31.149Z
+  lastUpdated: 2026-02-21T21:58:31.149Z
+modules:
+  - name: core
+    version: 6.0.0-beta.0
+    installDate: 2026-02-21T21:58:30.415Z
+    lastUpdated: 2026-02-21T21:58:30.415Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+  - name: kbb
+    version: null
+    installDate: 2026-02-21T21:58:29.769Z
+    lastUpdated: 2026-02-21T21:58:30.797Z
+    source: external
+    npmPackage: kBuild-builder
+    repoUrl: https://github.com/Kendralabs/kBuild-builder
+  - name: cis
+    version: null
+    installDate: 2026-02-21T21:58:30.403Z
+    lastUpdated: 2026-02-21T21:58:31.149Z
+    source: external
+    npmPackage: kBuild-creative-intelligence-suite
+    repoUrl: https://github.com/Kendralabs/kBuild-module-creative-intelligence-suite
+ides:
+  - claude-code
+  - cursor
+  - gemini

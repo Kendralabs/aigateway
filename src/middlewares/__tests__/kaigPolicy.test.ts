@@ -24,7 +24,7 @@ describe('KAIG Policy Middleware Unit Tests', () => {
   it('should bypass non-POST requests', async () => {
     app.get('/v1/chat/completions', (c) => c.json({ success: true }));
     const res = await app.request('/v1/chat/completions', {
-      method: 'GET'
+      method: 'GET',
     });
     expect(res.status).toBe(200);
     expect(fetchMock).not.toHaveBeenCalled();
@@ -35,7 +35,7 @@ describe('KAIG Policy Middleware Unit Tests', () => {
     const res = await app.request('/v1/unrelated', {
       method: 'POST',
       body: JSON.stringify({ model: 'gpt-4o' }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
     expect(res.status).toBe(200);
     expect(fetchMock).not.toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe('KAIG Policy Middleware Unit Tests', () => {
     const res = await app.request('/v1/chat/completions', {
       method: 'POST',
       body: JSON.stringify({ model: 'gpt-4o' }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     expect(res.status).toBe(200);
@@ -60,13 +60,13 @@ describe('KAIG Policy Middleware Unit Tests', () => {
     fetchMock.mockResolvedValueOnce({
       status: 404,
       ok: false,
-      json: async () => ({ detail: 'Model not found' })
+      json: async () => ({ detail: 'Model not found' }),
     });
 
     const res = await app.request('/v1/chat/completions', {
       method: 'POST',
       body: JSON.stringify({ model: 'unknown-model' }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     expect(res.status).toBe(403);
@@ -82,19 +82,21 @@ describe('KAIG Policy Middleware Unit Tests', () => {
       json: async () => ({
         id: 'gpt-4o',
         name: 'GPT-4o',
-        status: 'pending_approval'
-      })
+        status: 'pending_approval',
+      }),
     });
 
     const res = await app.request('/v1/chat/completions', {
       method: 'POST',
       body: JSON.stringify({ model: 'gpt-4o' }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     expect(res.status).toBe(403);
     const data: any = await res.json();
-    expect(data.error.message).toContain('status is currently \'pending_approval\'');
+    expect(data.error.message).toContain(
+      "status is currently 'pending_approval'"
+    );
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
@@ -107,8 +109,8 @@ describe('KAIG Policy Middleware Unit Tests', () => {
         id: 'gpt-4o',
         name: 'GPT-4o',
         provider_id: 'openai',
-        status: 'active'
-      })
+        status: 'active',
+      }),
     });
 
     // 2. Mock provider details lookup
@@ -119,8 +121,8 @@ describe('KAIG Policy Middleware Unit Tests', () => {
         id: 'openai',
         name: 'OpenAI',
         api_key: 'sk-test-key-12345',
-        api_base_url: 'https://custom-openai-url.com/v1'
-      })
+        api_base_url: 'https://custom-openai-url.com/v1',
+      }),
     });
 
     // Add final route handler that asserts injected headers are present in the Hono context Request!
@@ -136,15 +138,15 @@ describe('KAIG Policy Middleware Unit Tests', () => {
           provider: providerHeader,
           apiKey: apiKeyHeader,
           auth: authHeader,
-          customHost: customHostHeader
-        }
+          customHost: customHostHeader,
+        },
       });
     });
 
     const res = await app.request('/v1/chat/completions', {
       method: 'POST',
       body: JSON.stringify({ model: 'gpt-4o' }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     expect(res.status).toBe(200);
@@ -154,7 +156,7 @@ describe('KAIG Policy Middleware Unit Tests', () => {
     expect(data.injected.apiKey).toBe('sk-test-key-12345');
     expect(data.injected.auth).toBe('Bearer sk-test-key-12345');
     expect(data.injected.customHost).toBe('https://custom-openai-url.com/v1');
-    
+
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 });

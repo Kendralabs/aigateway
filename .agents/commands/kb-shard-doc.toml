@@ -1,0 +1,12 @@
+description = "Executes the shard-doc task from kBuild."
+prompt = '''
+Execute the following kBuild task workflow:
+
+PRE-FLIGHT CHECKLIST:
+1.  [ ] IMMEDIATE ACTION: Load and parse @{_kbuild/core/config.yaml}.
+2.  [ ] IMMEDIATE ACTION: Read and load the task definition at @{_kbuild/core/tasks/shard-doc.xml}.
+
+Follow all instructions and complete the task as defined.
+
+TASK DEFINITION: @{_kbuild/core/tasks/shard-doc.xml}
+'''

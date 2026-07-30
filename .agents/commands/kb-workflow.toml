@@ -1,0 +1,4 @@
+description = "Kendra Build KBB Workflow: workflow"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @{_kbuild/kbb/workflows/workflow/workflow.md}, READ its entire contents and follow its directions exactly!
+"""
