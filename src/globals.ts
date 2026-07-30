@@ -48,6 +48,7 @@ export const ANTHROPIC: string = 'anthropic';
 export const ANYSCALE: string = 'anyscale';
 export const PALM: string = 'palm';
 export const TOGETHER_AI: string = 'together-ai';
+export const CLOUDFLARE: string = 'cloudflare';
 export const GOOGLE: string = 'google';
 export const GOOGLE_VERTEX_AI: string = 'vertex-ai';
 export const HUGGING_FACE: string = 'huggingface';
@@ -127,6 +128,7 @@ export const VALID_PROVIDERS = [
   PERPLEXITY_AI,
   REKA_AI,
   TOGETHER_AI,
+  CLOUDFLARE,
   DEEPINFRA,
   NCOMPASS,
   STABILITY_AI,

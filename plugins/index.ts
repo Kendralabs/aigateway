@@ -1,3 +1,4 @@
+import { handler as kendrabridge } from './kendra/bridge';
 import { handler as defaultregexMatch } from './default/regexMatch';
 import { handler as defaultsentenceCount } from './default/sentenceCount';
 import { handler as defaultwordCount } from './default/wordCount';
@@ -179,5 +180,8 @@ export const plugins = {
   },
   'crowdstrike-aidr': {
     guardChatCompletions: crowdstrikeAidrGuardChatCompletions,
+  },
+  kendra: {
+    bridge: kendrabridge,
   },
 };
