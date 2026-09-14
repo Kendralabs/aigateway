@@ -37,6 +37,7 @@ import { realTimeHandler } from './handlers/realtimeHandler';
 import filesHandler from './handlers/filesHandler';
 import batchesHandler from './handlers/batchesHandler';
 import finetuneHandler from './handlers/finetuneHandler';
+import { atlassianMcpHandler } from './handlers/atlassianMcpHandler';
 import { messagesHandler } from './handlers/messagesHandler';
 import { imageEditsHandler } from './handlers/imageEditsHandler';
 import { messagesCountTokensHandler } from './handlers/messagesCountTokensHandler';
@@ -303,10 +304,17 @@ app.post('/v1/proxy/*', proxyHandler);
 // Support the /v1 proxy endpoint after all defined endpoints so this does not interfere.
 app.post('/v1/*', requestValidator, proxyHandler);
 
+// Atlassian MCP endpoint – forwards to the Atlassian MCP server via KMCP proxy
+app.post('/v1/atlassian/mcp/*', requestValidator, atlassianMcpHandler);
+
 // Support the /v1 proxy endpoint after all defined endpoints so this does not interfere.
 app.get('/v1/:path{(?!realtime).*}', requestValidator, proxyHandler);
 
 app.delete('/v1/*', requestValidator, proxyHandler);
+
+// MCP endpoint
+import { mcpHandler } from './handlers/mcpHandler';
+app.post('/v1/mcp/*', requestValidator, mcpHandler);
 
 // Export the app
 export default app;
