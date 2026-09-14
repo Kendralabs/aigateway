@@ -73,6 +73,9 @@ export async function atlassianMcpHandler(c: Context) {
     return c.text(respText, status);
   } catch (err: any) {
     logger.error('Atlassian MCP proxy error', err);
-    return c.json({ error: 'Failed to forward to Atlassian MCP', details: err.message }, 502);
+    return c.json(
+      { error: 'Failed to forward to Atlassian MCP', details: err.message },
+      502
+    );
   }
 }

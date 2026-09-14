@@ -35,7 +35,9 @@ export async function mcpHandler(c: Context) {
     init.body = body;
     // Preserve content-type
     if (!init.headers['content-type'] && c.req.headers.get('content-type')) {
-      init.headers['content-type'] = c.req.headers.get('content-type') as string;
+      init.headers['content-type'] = c.req.headers.get(
+        'content-type'
+      ) as string;
     }
   }
 
@@ -53,6 +55,9 @@ export async function mcpHandler(c: Context) {
     }
   } catch (err: any) {
     logger.error('MCP proxy error', err);
-    return c.json({ error: 'Failed to proxy to KMCP server', details: err.message }, 502);
+    return c.json(
+      { error: 'Failed to proxy to KMCP server', details: err.message },
+      502
+    );
   }
 }
